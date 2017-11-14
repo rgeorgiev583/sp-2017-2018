@@ -37,6 +37,7 @@
 
 5. Защо output-ът на следната програма е `Gidday world`?  Обосновете отговора си.
 
+```
 #include <unistd.h>
 #include <fcntl.h>
 
@@ -55,3 +56,4 @@ int main(int argc, const char* const* argv)
     write(fd3, "Gidday", 6);
     return 0;
 }
+```
