@@ -26,7 +26,7 @@
 1. `who | wc -l`
 2. `ls | wc -l`
 3. `grep argv[1] argv[2..] | wc -l`
-4. `head argv[1] argv[3..] | grep argv[2] | wc -l`
+4. `head -n argv[1] argv[3..] | grep argv[2] | wc -l`
 5. `grep argv[1..] | sort | uniq | wc -l`
 6. `argv[1] | argv[2] | argv[3] | ... | argv[N]`
 7. `argv[1] argv[2] | argv[3] argv[4] | ... argv[N-1] argv[N]`
