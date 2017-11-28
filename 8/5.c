@@ -1,5 +1,12 @@
 #include <unistd.h>
 
+void redirect(int fds[2], int redirect_fd)
+{
+    dup2(fds[redirect_fd], redirect_fd);
+    close(fds[0]);
+    close(fds[1]);
+}
+
 int main(int argc, char** argv)
 {
     int fds1[2];
@@ -7,51 +14,37 @@ int main(int argc, char** argv)
 
     if (fork())
     {
-        dup2(fds1[1], 1);
-        close(fds1[0]);
-        close(fds1[1]);
+        redirect(fds1, 1);
         argv[0] = "grep";
         execvp("grep", argv);
     }
     else
     {
-        dup2(fds1[0], 0);
-        close(fds1[0]);
-        close(fds1[1]);
+        redirect(fds1, 0);
 
         int fds2[2];
         pipe(fds2);
 
         if (fork())
         {
-            dup2(fds2[1], 1);
-            close(fds2[0]);
-            close(fds2[1]);
+            redirect(fds2, 1);
             execlp("sort", "sort", NULL);
         }
         else
         {
-            dup2(fds2[0], 0);
-            close(fds2[0]);
-            close(fds2[1]);
+            redirect(fds2, 0);
 
             int fds3[2];
             pipe(fds3);
             
             if (fork())
             {
-                dup2(fds3[1], 1);
-                close(fds3[0]);
-                close(fds3[1]);
+                redirect(fds3, 1);
                 execlp("uniq", "uniq", NULL);
             }
             else
             {
-                close(fds1[0]);
-                close(fds2[0]);
-                dup2(fds3[0], 0);
-                close(fds3[0]);
-                close(fds3[1]);
+                redirect(fds3, 0);
                 execlp("wc", "wc", "-l", NULL);
             }
         }
